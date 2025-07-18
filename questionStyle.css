@@ -1,0 +1,85 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+}
+header {
+  padding: 15px 20px;
+  font-size: 20px;
+  font-weight: bold;
+  color: green;
+  border-bottom: 1px solid #ddd;
+}
+.nav-quue {
+  top: 0;
+}
+.progress-bar {
+  margin-top: 65px;
+  height: 6px;
+  background-color: #eee;
+}
+.progress {
+  height: 6px;
+  background-color: #4caf50;
+  width: 0%;
+  transition: width 0.3s ease-in-out;
+}
+.container {
+  max-width: 80%;
+  margin: 30px auto;
+  background-color: #e6f6e6;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: left;
+}
+.question {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.answers label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  margin-top: 20px;
+}
+button {
+  padding: 10px 18px;
+  font-size: 14px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #45a049;
+}
+.submit-btn {
+  text-align: center;
+  margin-top: 20px;
+}
+.submit-btn button {
+  background-color: #388e3c;
+}
+.hidden {
+  display: none;
+}
+.message-box {
+  text-align: center;
+  margin: 20px auto;
+  padding: 15px;
+  background-color: #dff0d8;
+  color: #3c763d;
+  border: 1px solid #d6e9c6;
+  border-radius: 5px;
+  width: 80%;
+  font-size: 16px;
+  display: none;
+}

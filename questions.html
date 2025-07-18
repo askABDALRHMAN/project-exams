@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASK</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="questionStyle.css">
+</head>
+<body>
+    <div class="navbar nav-quue">
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"
+                viewBox="0 0 24 24" fill="none" stroke="#4CAF50"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M15 4a3 3 0 0 1 3 3v1h1a3 3 0 0 1 0 6h-1v1a3 3 0 0 1-3 3M9 4a3 3 0 0 0-3 3v1H5a3 3 0 0 0 0 6h1v1a3 3 0 0 0 3 3" />
+                <path d="M9 17v1a3 3 0 0 0 6 0v-1M12 6v12" />
+            </svg>
+            <span class="name-logo" style="color: #000000;">Quizzy</span>
+        </div>
+    </div>
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    <div class="container" id="quiz-container">
+        <!-- Questions will be injected here -->
+    </div>
+    <div class="buttons">
+        <button id="prevBtn" onclick="prevQuestion()">Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+    <div class="submit-btn hidden" id="submitContainer">
+        <button onclick="submitQuiz()">Submit</button>
+    </div>
+    <div class="message-box" id="messageBox">The test has been submitted
+        successfully! You will be taken to the results page .</div>
+    <script src="script.js"></script>
+</body>
+</html>
