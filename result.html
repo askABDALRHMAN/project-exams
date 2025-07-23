@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzy - Result</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="aNav" href="home.html">
+    <div class="navbar" style="top: 0;">
+        <div class="logo">
+            <svg width="100" height="100" viewBox="0 0 64 64"
+                xmlns="http://www.w3.org/2000/svg">
+                <polygon points="32,4 4,20 32,36 60,20 32,4" fill="#4CAF50"
+                    stroke="#2E7D32" stroke-width="1" />
+                <line x1="32" y1="36" x2="32" y2="50" stroke="#FFC107"
+                    stroke-width="2" />
+                <path d="M16,26 L16,40 C16,43 48,43 48,40 L48,26"
+                    fill="#388E3C" />
+                <circle cx="32" cy="50" r="3" fill="#FFC107" stroke="#FFA000"
+                    stroke-width="1" />
+            </svg>
+            <span class="name-logo" style="color: #000000;">Quizzy</span>
+        </div>
+    </div>
+    </a>
+    <div class="results-container">
+        <div class="results-summary">
+            <div>
+                <h2>Your Quiz Results</h2>
+                <p class="result-motivation">Congratulations! You scored <strong
+                        id="score-percent">0%</strong>.</p>
+            </div>
+            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                alt="Trophy" />
+        </div>
+        <div class="score-breakdown" id="answer-breakdown">
+        </div>
+        <div class="actions">
+            <button class="retake" onclick="retakeQuiz()">Retake Quiz</button>
+            <button class="home" onclick="goHome()">Return to Homepage</button>
+        </div>
+    </div>
+    <script>
+        const score = localStorage.getItem("quizScore");
+        const answers = JSON.parse(localStorage.getItem("answerBreakdown"));
+        document.getElementById("score-percent").textContent = score + "%";
+        const container = document.getElementById("answer-breakdown");
+        if (answers) {
+            answers.forEach((ans, index) => {
+                const card = document.createElement("div");
+                card.className =
+                    `score-card ${ans.correct ? "correct" : "incorrect"}`;
+                card.textContent =
+                    `Question ${index + 1}\n${ans.correct ? "Correct" : "Incorrect"}`;
+                container.appendChild(card);
+            });
+        }
+        function retakeQuiz() {
+            localStorage.removeItem("quizScore");
+            localStorage.removeItem("answerBreakdown");
+            window.location.href = "questions.html";
+        }
+        function goHome() {
+            window.location.href = "home.html";
+        }
+        if (score > 50) {
+            document.getElementsByClassName("result-motivation")[0].innerHTML =
+                "Congratulations! You scored " + score + "%";
+        } else {
+            document.getElementsByClassName("result-motivation")[0].innerHTML =
+                "Unfortunately your score " + score + "%" + ", try again"
+            document.querySelector(".results-summary img").style.display =
+                "none";
+        }
+    </script>
+</body>
+</html>

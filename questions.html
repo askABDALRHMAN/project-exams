@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzy - Questions</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="questionStyle.css">
+</head>
+<body>
+    <a class="aNav" href="home.html">
+    <div class="navbar nav-quue">
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"
+                viewBox="0 0 24 24" fill="none" stroke="#4CAF50"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M15 4a3 3 0 0 1 3 3v1h1a3 3 0 0 1 0 6h-1v1a3 3 0 0 1-3 3M9 4a3 3 0 0 0-3 3v1H5a3 3 0 0 0 0 6h1v1a3 3 0 0 0 3 3" />
+                <path d="M9 17v1a3 3 0 0 0 6 0v-1M12 6v12" />
+            </svg>
+            <span class="name-logo" style="color: #000000;">Quizzy</span>
+        </div>
+    </div>
+    </a>
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    <div class="container" id="quiz-container">
+        <!-- Questions will be injected here -->
+    </div>
+    <div class="buttons">
+        <button id="prevBtn" onclick="prevQuestion()">Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()">Next</button>
+    </div>
+    <div class="submit-btn hidden" id="submitContainer">
+        <button onclick="submitQuiz()">Submit</button>
+    </div>
+    <div class="message-box" id="messageBox">The test has been submitted
+        successfully! You will be taken to the results page.</div>
+    <script>
+        const API_KEY = 'TzNXMeZDprMVkNkwKw0iPcBR8yWTihe6fOomeaiT';
+        let questions = [];
+        let currentQuestion = 0;
+        let userAnswers = [];
+
+        const quizContainer = document.getElementById('quiz-container');
+        const progressBar = document.getElementById('progress');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const submitContainer = document.getElementById('submitContainer');
+        const messageBox = document.getElementById('messageBox');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const difficulty = urlParams.get('difficulty') || 'Medium';
+
+        async function fetchQuestions() {
+            const url = `https://quizapi.io/api/v1/questions?apiKey=${API_KEY}&limit=20&difficulty=${difficulty}&category=code`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                return data.map(processQuestionData);
+            } catch (error) {
+                console.error("Error fetching questions:", error);
+                return [];
+            }
+        }
+
+        function processQuestionData(APIQuestion) {
+            if (!APIQuestion){ 
+                return null 
+            }
+
+            const options = [];
+            const correctAnswers = [];
+
+            for (let i in APIQuestion.answers) {
+                if (APIQuestion.answers[i]) {
+                    options.push({
+                        text: APIQuestion.answers[i],
+                        correct: APIQuestion.correct_answers[`${i}_correct`] === 'true'
+                    });
+                }
+            }
+
+            return {
+                question: APIQuestion.question,
+                options: options
+            };
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            if (!q) return;
+
+            quizContainer.innerHTML = `
+                <div class="question">${q.question}</div>
+                <div class="answers">
+                    ${q.options.map((opt, i) => {
+                        const checked = userAnswers[currentQuestion] === opt.text ? 'checked' : '';
+                        return `<label><input type="radio" name="answer" value="${opt.text}" data-correct="${opt.correct}" ${checked}> ${opt.text}</label>`;
+                    }).join('')}
+                </div>
+            `;
+
+            document.querySelectorAll('input[name="answer"]').forEach((input) => {
+                input.addEventListener('change', (e) => {
+                    userAnswers[currentQuestion] = e.target.value;
+                });
+            });
+
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            progressBar.style.width = progress + '%';
+
+            // Toggle button visibility
+            prevBtn.style.display = currentQuestion === 0 ? 'none' : 'inline-block';
+            nextBtn.style.display = currentQuestion === questions.length - 1 ? 'none' : 'inline-block';
+            submitContainer.classList.toggle('hidden', currentQuestion !== questions.length - 1);
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            const breakdown = [];
+
+            userAnswers.forEach((answer, index) => {
+                const selectedOption = questions[index].options.find(opt => opt.text === answer);
+                const correct = selectedOption ? selectedOption.correct : false;
+                breakdown.push({
+                    question: questions[index].question,
+                    userAnswer: answer,
+                    correctAnswer: questions[index].options.find(opt => opt.correct).text,
+                    correct
+                });
+                if (correct) score++;
+            });
+
+            const percentage = Math.round((score / questions.length) * 100);
+            localStorage.setItem('quizScore', percentage);
+            localStorage.setItem('answerBreakdown', JSON.stringify(breakdown));
+
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                window.location.href = 'result.html';
+            }, 1000);
+        }
+
+        async function initQuiz() {
+            const fetchedQuestions = await fetchQuestions();
+            if (fetchedQuestions.length > 0) {
+                questions = fetchedQuestions;
+                userAnswers = new Array(questions.length).fill(null);
+                renderQuestion();
+            } else {
+                quizContainer.innerHTML = '<p>Error loading question. Please try again.</p>';
+            }
+        }
+
+        initQuiz();
+    </script>
+</body>
+</html>
